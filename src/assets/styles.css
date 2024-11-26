@@ -1,0 +1,131 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  /* Pagination at the bottom */
+  .pagination-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%; /* Take full height */
+  }
+  
+  .pagination {
+    margin-top: 1rem;
+    align-self: flex-end;
+  }
+  
+  /* Filters layout */
+  .filters input,
+  .filters select {
+    width: 100%;
+    height: 40px; /* Set height for consistency */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .filters select {
+    width: 100%;
+  }
+  
+  .filters {
+    margin-bottom: 1rem;
+  }
+  
+  .movie-title {
+    font-size: 36px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .title {
+    color: #e74c3c;
+    margin-left: 10px;
+  }
+  
+  .table-row:hover {
+    background-color: #d4edda;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+  }
+  
+  .pagination {
+    margin-top: 1rem;
+    align-self: flex-end;
+  }
+  
+  /* Make table rows clickable */
+  .table-row:hover {
+    background-color: #d4edda;
+    cursor: pointer;
+  }
+  /* General Styles */
+  .movie-title {
+    font-size: 36px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .title {
+    color: #e74c3c;
+    margin-left: 10px;
+  }
+  
+  /* Filter Section */
+  .filters {
+    margin: auto;
+  }
+  
+  .filter-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  /* Movie Card Layout */
+  .MuiCard-root {
+    transition: transform 0.3s ease;
+  }
+  
+  .MuiCard-root:hover {
+    transform: scale(1.05); /* Hover effect to scale */
+  }
+  
+  .MuiCardMedia-img {
+    object-fit: cover;
+  }
+  
+  /* Pagination Style */
+  .pagination {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  /* Responsive Layout */
+  @media (max-width: 600px) {
+    .movie-title {
+      font-size: 28px;
+    }
+  }
+  
+  @media (max-width: 960px) {
+    .filters {
+      margin-bottom: 1.5rem;
+    }
+  }
+  
