@@ -1,100 +1,48 @@
-.App {
-    font-family: sans-serif;
-    text-align: center;
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto; 
   }
-  /* Pagination at the bottom */
-  .pagination-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 100%; /* Take full height */
-  }
+
   
-  .pagination {
-    margin-top: 1rem;
-    align-self: flex-end;
+  .App {
+    background-color: #E4E0E1;
+    position: relative;
+    min-height: 100vh; 
+    color: white; 
+    padding: 20px;
+    box-sizing: border-box;
   }
+
   
   /* Filters layout */
-  .filters input,
-  .filters select {
+  .filters {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 1rem; 
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap; 
+  }
+  
+  .filters > div {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .filter-input,
+  .filter-yearpicker,
+  .filter-select {
     width: 100%;
-    height: 40px; /* Set height for consistency */
+    height: 40px;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
     outline: none;
-  }
-  
-  .filters select {
-    width: 100%;
-  }
-  
-  .filters {
-    margin-bottom: 1rem;
-  }
-  
-  .movie-title {
-    font-size: 36px;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .title {
-    color: #e74c3c;
-    margin-left: 10px;
-  }
-  
-  .table-row:hover {
-    background-color: #d4edda;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .pagination-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 100%;
-  }
-  
-  .pagination {
-    margin-top: 1rem;
-    align-self: flex-end;
-  }
-  
-  /* Make table rows clickable */
-  .table-row:hover {
-    background-color: #d4edda;
-    cursor: pointer;
-  }
-  /* General Styles */
-  .movie-title {
-    font-size: 36px;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .title {
-    color: #e74c3c;
-    margin-left: 10px;
-  }
-  
-  /* Filter Section */
-  .filters {
-    margin: auto;
-  }
-  
-  .filter-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
+    box-sizing: border-box;
+    background-color: #ccc;
   }
   
   /* Movie Card Layout */
@@ -103,23 +51,79 @@
   }
   
   .MuiCard-root:hover {
-    transform: scale(1.05); /* Hover effect to scale */
+    transform: scale(1.05); 
   }
   
   .MuiCardMedia-img {
     object-fit: cover;
   }
-  
-  /* Pagination Style */
-  .pagination {
-    margin-top: 2rem;
-    text-align: center;
+
+  .movie-card {
+    height: 700px;
   }
+
+
+  /* pagination */
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 0.5rem; 
+    margin: 1rem auto; 
+    flex-wrap: wrap; 
+  }
+  
+  .pagination-wrapper .MuiPagination-root {
+    background-color: #f8f9fa; 
+    border-radius: 8px; 
+    padding: 0.5rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .pagination-wrapper .MuiPaginationItem-root {
+    font-size: 16px; 
+    font-weight: bold; 
+    color: #220f0f; 
+    border: 1px solid #220f0f; 
+    border-radius: 4px; 
+    transition: all 0.3s ease; 
+  }
+  
+  .pagination-wrapper .MuiPaginationItem-root:hover {
+    background-color: #301014; 
+    color: #fff; 
+    border-color: #301014; 
+  }
+  
+  .pagination-wrapper .Mui-selected {
+    background-color: #6f1a30 !important; 
+    color: white !important;
+    border-color: #6f1a30; 
+  }
+  
+  .movie-title {
+    font-size: 36px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .title {
+    color: #6f1a30;
+    margin-left: 10px;
+  }
+
   
   /* Responsive Layout */
   @media (max-width: 600px) {
     .movie-title {
       font-size: 28px;
+    }
+    .pagination-wrapper {
+      justify-content: center; 
+      flex-direction: row; 
+      margin: 0.5rem 0; 
     }
   }
   

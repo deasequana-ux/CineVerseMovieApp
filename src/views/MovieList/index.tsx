@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Link for navigation
+import { Link } from "react-router-dom";
 import YearPicker from "../../components/YearPicker";
 
 const API_URL = "https://www.omdbapi.com/";
@@ -29,40 +29,55 @@ const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [search, setSearch] = useState("Pokemon");
   const [type, setType] = useState("movie");
-  const [year, setYear] = useState<string | null>(null); // Year is nullable
+  const [year, setYear] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState<string>("");
 
   const fetchMovies = async () => {
-    const response = await axios.get(API_URL, {
-      params: {
-        apikey: API_KEY,
-        s: search,
-        type,
-        y: year || "", // If year is null, pass an empty string (to get all years)
-        page,
-      },
-    });
+    try {
+      const response = await axios.get(API_URL, {
+        params: {
+          apikey: API_KEY,
+          s: search,
+          type,
+          y: year || "",
+          page,
+        },
+      });
 
-    if (response.data.Search) {
-      setMovies(response.data.Search);
-      setTotalPages(Math.ceil(response.data.totalResults / 10));
+      if (response.data.Response === "False") {
+        setError(response.data.Error);
+        setMovies([]);
+        setTotalPages(1);
+      } else {
+        setMovies(response.data.Search);
+        setTotalPages(Math.ceil(response.data.totalResults / 10));
+        setError("");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
     }
   };
 
   useEffect(() => {
+    setPage(1); 
+  }, [search, type, year]); 
+
+  useEffect(() => {
     fetchMovies();
-  }, [search, type, year, page]);
+  }, [search, type, year, page]); 
 
   return (
     <Container>
       <h1 className="movie-title">
         🎬 <span className="title">CineVerse</span>
       </h1>
-      {/* Filters section */}
+
+      {/* Filters Section */}
       <div className="filters">
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={12} md={12}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={4}>
             <input
               type="text"
               placeholder="Search Movies"
@@ -71,15 +86,20 @@ const MovieList: React.FC = () => {
               className="filter-input"
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <YearPicker value={year} onChange={setYear} />
+          <Grid item xs={12} sm={4}>
+            <YearPicker
+              value={year}
+              onChange={setYear}
+              className="filter-yearpicker"
+            />
           </Grid>
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid item xs={12} sm={4}>
             <Select
               value={type}
               onChange={(e) => setType(e.target.value as string)}
               variant="outlined"
               fullWidth
+              className="filter-select"
             >
               <MenuItem value="movie">Movies</MenuItem>
               <MenuItem value="series">TV Series</MenuItem>
@@ -88,6 +108,13 @@ const MovieList: React.FC = () => {
           </Grid>
         </Grid>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <Typography variant="h6" color="error" style={{ marginBottom: "20px" }}>
+          {error}
+        </Typography>
+      )}
 
       {/* Movie Section */}
       <Grid container spacing={4} justifyContent="center">
@@ -102,7 +129,7 @@ const MovieList: React.FC = () => {
                   <CardMedia
                     component="img"
                     alt={movie.Title}
-                    height="350"
+                    height="450"
                     image={movie.Poster}
                     title={movie.Title}
                   />
@@ -126,12 +153,12 @@ const MovieList: React.FC = () => {
         ))}
       </Grid>
 
-      {/* Pagination */}
       <Pagination
         count={totalPages}
         page={page}
         onChange={(e, value) => setPage(value)}
-        className="pagination"
+        className="pagination-wrapper"
+        style={{ marginTop: "30px", marginBottom: "30px" }}
       />
     </Container>
   );

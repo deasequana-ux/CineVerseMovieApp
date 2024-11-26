@@ -4,9 +4,10 @@ import { Select, MenuItem } from "@material-ui/core";
 interface YearPickerProps {
   value: string | null;
   onChange: (year: string | null) => void;
+  className?: string;
 }
 
-const YearPicker: React.FC<YearPickerProps> = ({ value, onChange }) => {
+const YearPicker: React.FC<YearPickerProps> = ({ value, onChange, className }) => {
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - 1980 + 1 },
@@ -22,6 +23,16 @@ const YearPicker: React.FC<YearPickerProps> = ({ value, onChange }) => {
       variant="outlined"
       fullWidth
       displayEmpty
+      className={className}
+      MenuProps={{
+        PaperProps: {
+          style: {
+            maxHeight: 300,
+            overflowY: 'auto', 
+            overflowX: 'hidden',
+          },
+        },
+      }}
     >
       <MenuItem value="">Select Year</MenuItem>
       {years.map((year) => (
