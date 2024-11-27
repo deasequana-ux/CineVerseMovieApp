@@ -46,11 +46,11 @@
   }
   
   /* Movie Card Layout */
-  .MuiCard-root {
+  .movie-card {
     transition: transform 0.3s ease;
   }
   
-  .MuiCard-root:hover {
+  .movie-card:hover {
     transform: scale(1.05); 
   }
   
@@ -62,6 +62,9 @@
     height: 700px;
   }
 
+  .rating-card:hover {
+    transform: scale(1.05); 
+  }
 
   /* pagination */
   .pagination-wrapper {

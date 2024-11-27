@@ -11,7 +11,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import axios from "axios";
-import Loading from "../../components/Loading";
+import Loading from "../../components/loading";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const API_URL = "https://www.omdbapi.com/";
@@ -75,8 +75,8 @@ const MovieDetails: React.FC = () => {
         onClick={() => navigate("/")}
         style={{
           position: "fixed", 
-          top: "20px", 
-          right: "20px", 
+          top: "10px", 
+          right: "30px", 
           zIndex: 10, 
           backgroundColor:"#6f1a30",
           color:"white",
@@ -88,7 +88,7 @@ const MovieDetails: React.FC = () => {
 
       <Card
         style={{
-          maxWidth: "900px",
+          maxWidth: "1000px",
           margin: "auto",
           boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
           borderRadius: "15px",
@@ -100,7 +100,7 @@ const MovieDetails: React.FC = () => {
           <CardMedia
             component="img"
             alt={movie?.Title}
-            height="500"
+            height="400"
             image={movie?.Poster}
             title={movie?.Title}
             style={{
@@ -199,16 +199,6 @@ const MovieDetails: React.FC = () => {
             >
               Cast: {handleControl(movie?.Actors || "")}
             </Typography>
-            <Typography
-              variant="subtitle2"
-              style={{
-                fontWeight: "600",
-                marginBottom: "5px",
-                color: "#555",
-              }}
-            >
-              IMDb Rating: {handleControl(movie?.imdbRating || "")}
-            </Typography>
           </Box>
 
           {/* Ratings Section */}
@@ -220,6 +210,7 @@ const MovieDetails: React.FC = () => {
               {movie?.Ratings?.map((rating, index) => (
                 <Grid item xs={12} sm={4} key={index}>
                   <Card
+                    className="rating-card"
                     style={{
                       padding: "15px",
                       backgroundColor: "#E5E3D4",
@@ -228,7 +219,7 @@ const MovieDetails: React.FC = () => {
                       textAlign: "center",
                     }}
                   >
-                    <Typography variant="body2" style={{ color: "#555", fontWeight: "600" }}>
+                    <Typography variant="body2" style={{ color: "#6f1a30", fontWeight: "600" }}>
                       {rating.Source}
                     </Typography>
                     <Typography variant="body2" style={{ color: "#333", marginTop: "8px" }}>

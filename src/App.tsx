@@ -7,10 +7,6 @@ import "./assets/styles.css";
 const App: React.FC = () => {
   return (
     <Router>
-      {/* Dalgalı Arka Plan */}
-      <div className="wavy-background"></div>
-
-      {/* Ana İçerik */}
       <div className="App">
         <Routes>
           <Route path="/" element={<MovieList />} />

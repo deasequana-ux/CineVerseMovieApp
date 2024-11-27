@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+// src/components/MovieList.tsx
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearch, setType, setYear, setPage } from "../../store/slices/movieFilterSlice";
 import {
   Container,
   Grid,
@@ -12,7 +15,7 @@ import {
 import { Pagination } from "@material-ui/lab";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import YearPicker from "../../components/YearPicker";
+import YearPicker from "../../components/yearPicker";
 
 const API_URL = "https://www.omdbapi.com/";
 const API_KEY = "468c3b7e";
@@ -26,13 +29,12 @@ interface Movie {
 }
 
 const MovieList: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [search, setSearch] = useState("Pokemon");
-  const [type, setType] = useState("movie");
-  const [year, setYear] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [error, setError] = useState<string>("");
+  const dispatch = useDispatch();
+
+  const { search, type, year, page } = useSelector((state: any) => state.movie);
+  const [movies, setMovies] = React.useState<Movie[]>([]);
+  const [totalPages, setTotalPages] = React.useState(1);
+  const [error, setError] = React.useState<string>("");
 
   const fetchMovies = async () => {
     try {
@@ -61,12 +63,8 @@ const MovieList: React.FC = () => {
   };
 
   useEffect(() => {
-    setPage(1); 
-  }, [search, type, year]); 
-
-  useEffect(() => {
     fetchMovies();
-  }, [search, type, year, page]); 
+  }, [search, type, year, page]);
 
   return (
     <Container>
@@ -82,21 +80,21 @@ const MovieList: React.FC = () => {
               type="text"
               placeholder="Search Movies"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => dispatch(setSearch(e.target.value))}
               className="filter-input"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <YearPicker
               value={year}
-              onChange={setYear}
+              onChange={(value) => dispatch(setYear(value))}
               className="filter-yearpicker"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <Select
               value={type}
-              onChange={(e) => setType(e.target.value as string)}
+              onChange={(e) => dispatch(setType(e.target.value as string))}
               variant="outlined"
               fullWidth
               className="filter-select"
@@ -121,10 +119,7 @@ const MovieList: React.FC = () => {
         {movies.map((movie) => (
           <Grid item key={movie.imdbID} xs={12} sm={6} md={4} lg={3}>
             <Card className="movie-card">
-              <Link
-                to={`/movie/${movie.imdbID}`}
-                style={{ textDecoration: "none" }}
-              >
+              <Link to={`/movie/${movie.imdbID}`} style={{ textDecoration: "none" }}>
                 {movie.Poster !== "N/A" ? (
                   <CardMedia
                     component="img"
@@ -156,7 +151,7 @@ const MovieList: React.FC = () => {
       <Pagination
         count={totalPages}
         page={page}
-        onChange={(e, value) => setPage(value)}
+        onChange={(e, value) => dispatch(setPage(value))}
         className="pagination-wrapper"
         style={{ marginTop: "30px", marginBottom: "30px" }}
       />
