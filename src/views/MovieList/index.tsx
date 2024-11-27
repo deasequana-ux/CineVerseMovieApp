@@ -1,6 +1,5 @@
-// src/components/MovieList.tsx
-import React, { useEffect } from "react";
-import {  useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { AppDispatch, useSelector } from "../../store/store";
 import { setSearch, setType, setYear, setPage, fetchMovies } from "../../store/slices/movieFilterSlice";
 import {
@@ -12,6 +11,7 @@ import {
   Typography,
   Select,
   MenuItem,
+  CircularProgress,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { Link } from "react-router-dom";
@@ -21,9 +21,15 @@ const MovieList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { Search, Type, Year, Page, Movies, TotalPage, MoviesError } = useSelector((state) => state.movie);
 
+  // Loading state to track when the data is being fetched
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(fetchMovies({ Search, Type, Year, Page }));
+    setLoading(true); 
+    dispatch(fetchMovies({ Search, Type, Year, Page }))
+      .finally(() => {
+        setLoading(false); 
+      });
   }, [dispatch, Search, Type, Year, Page]);
 
   return (
@@ -74,39 +80,45 @@ const MovieList: React.FC = () => {
         </Typography>
       )}
 
-      {/* Movie Section */}
-      <Grid container spacing={4} justifyContent="center">
-        {Movies.map((movie) => (
-          <Grid item key={movie.imdbID} xs={12} sm={6} md={4} lg={3}>
-            <Card className="movie-card">
-              <Link to={`/movie/${movie.imdbID}`} style={{ textDecoration: "none" }}>
-                {movie.Poster !== "N/A" ? (
-                  <CardMedia
-                    component="img"
-                    alt={movie.Title}
-                    height="450"
-                    image={movie.Poster}
-                    title={movie.Title}
-                  />
-                ) : (
-                  ""
-                )}
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {movie.Title}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {movie.Year}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {movie.imdbID}
-                  </Typography>
-                </CardContent>
-              </Link>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      {loading ? (
+        <Grid container justifyContent="center" style={{ marginTop: "30px" }}>
+          <CircularProgress />
+        </Grid>
+      ) : (
+        // Movie Section
+        <Grid container spacing={4} justifyContent="center">
+          {Movies.map((movie) => (
+            <Grid item key={movie.imdbID} xs={12} sm={6} md={4} lg={3}>
+              <Card className="movie-card">
+                <Link to={`/movie/${movie.imdbID}`} style={{ textDecoration: "none" }}>
+                  {movie.Poster !== "N/A" ? (
+                    <CardMedia
+                      component="img"
+                      alt={movie.Title}
+                      height="450"
+                      image={movie.Poster}
+                      title={movie.Title}
+                    />
+                  ) : (
+                    ""
+                  )}
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {movie.Title}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {movie.Year}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {movie.imdbID}
+                    </Typography>
+                  </CardContent>
+                </Link>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
       <Pagination
         count={TotalPage}
