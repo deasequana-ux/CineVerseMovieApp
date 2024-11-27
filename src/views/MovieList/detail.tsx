@@ -1,72 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Container,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-  Button,
-  Box,
-  Grid,
-} from "@material-ui/core";
-import axios from "axios";
+import { Container, Typography, Card, CardMedia, CardContent, Button, Box, Grid } from "@material-ui/core";
+import { useDispatch } from "react-redux";
+import { fetchMovieDetails } from "../../store/slices/movieFilterSlice";
 import Loading from "../../components/loading";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { AppDispatch, useSelector } from "../../store/store";
 
-const API_URL = "https://www.omdbapi.com/";
-const API_KEY = "468c3b7e";
-
-interface MovieDetails {
-  Title: string;
-  Year: string;
-  Genre: string;
-  Director: string;
-  Actors: string;
-  Plot: string;
-  Poster: string;
-  imdbRating: string;
-  Awards: string;
-  Ratings: Array<{
-    Source: string;
-    Value: string;
-  }>;
-}
-
-const MovieDetails: React.FC = () => {
+const Movie: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [movie, setMovie] = useState<MovieDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  
+
+  const { Movie, MovieLoading, MovieError } = useSelector((state) => state.movie);
+  
+  useEffect(() => {
+    
+    if (id) {
+      dispatch(fetchMovieDetails(id));
+    }
+  }, [id, dispatch]);
 
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      try {
-        const response = await axios.get(API_URL, {
-          params: {
-            apikey: API_KEY,
-            i: id,
-          },
-        });
-        if (response.data.Error) {
-          console.error("Error fetching movie details:", response.data.Error);
-        } else {
-          setMovie(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching movie details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMovieDetails();
-  }, [id]);
+    
+    if (Movie) {
+      
+    }
+  }, [ dispatch]);
 
-  if (loading) {
+  const handleControl = (data: string) => (data === "N/A" ? "" : data);
+
+  if (MovieLoading) {
     return <Loading />;
   }
 
-  const handleControl = (data: string) => (data === "N/A" ? "" : data);
+  if (MovieError) {
+    return <div>{`Error: ${MovieError}`}</div>;
+  }
 
   return (
     <Container>
@@ -96,13 +67,13 @@ const MovieDetails: React.FC = () => {
           marginTop: "60px",
         }}
       >
-        {movie?.Poster !== "N/A" ? (
+        {Movie && Movie?.Poster !== "N/A" ? (
           <CardMedia
             component="img"
-            alt={movie?.Title}
+            alt={Movie?.Title}
             height="400"
-            image={movie?.Poster}
-            title={movie?.Title}
+            image={Movie?.Poster}
+            title={Movie?.Title}
             style={{
               objectFit: "cover",
               filter: "brightness(80%)",
@@ -127,7 +98,7 @@ const MovieDetails: React.FC = () => {
               color: "#333",
             }}
           >
-            {handleControl(movie?.Title || "")}
+            {handleControl(Movie?.Title || "")}
           </Typography>
           <Typography
             variant="h6"
@@ -136,7 +107,7 @@ const MovieDetails: React.FC = () => {
               marginBottom: "10px",
             }}
           >
-            {handleControl(movie?.Year || "")}
+            {handleControl(Movie?.Year || "")}
           </Typography>
           <Box display="flex" flexDirection="column" marginBottom="15px">
             <Typography
@@ -144,10 +115,10 @@ const MovieDetails: React.FC = () => {
               style={{
                 fontStyle: "italic",
                 color: "#333",
-                lineHeight: "2.5",
+                lineHeight: "1.5",
               }}
             >
-              {handleControl(movie?.Plot || "")}
+              {handleControl(Movie?.Plot || "")}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -157,7 +128,7 @@ const MovieDetails: React.FC = () => {
                 color: "#555",
               }}
             >
-              Genre: {handleControl(movie?.Genre || "")}
+              Genre: {handleControl(Movie?.Genre || "")}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -167,7 +138,7 @@ const MovieDetails: React.FC = () => {
                 color: "#555",
               }}
             >
-              Actors: {handleControl(movie?.Actors || "")}
+              Actors: {handleControl(Movie?.Actors || "")}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -177,7 +148,7 @@ const MovieDetails: React.FC = () => {
                 color: "#555",
               }}
             >
-              Awards: {handleControl(movie?.Awards || "")}
+              Awards: {handleControl(Movie?.Awards || "")}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -187,17 +158,7 @@ const MovieDetails: React.FC = () => {
                 color: "#555",
               }}
             >
-              Director: {handleControl(movie?.Director || "")}
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              style={{
-                fontWeight: "600",
-                marginBottom: "5px",
-                color: "#555",
-              }}
-            >
-              Cast: {handleControl(movie?.Actors || "")}
+              Director: {handleControl(Movie?.Director || "")}
             </Typography>
           </Box>
 
@@ -207,7 +168,7 @@ const MovieDetails: React.FC = () => {
               Ratings:
             </Typography>
             <Grid container spacing={2} style={{ marginTop: "10px" }}>
-              {movie?.Ratings?.map((rating, index) => (
+              {Movie?.Ratings?.map((rating, index) => (
                 <Grid item xs={12} sm={4} key={index}>
                   <Card
                     className="rating-card"
@@ -230,12 +191,10 @@ const MovieDetails: React.FC = () => {
               ))}
             </Grid>
           </Box>
-
-          
         </CardContent>
       </Card>
     </Container>
   );
 };
 
-export default MovieDetails;
+export default Movie;

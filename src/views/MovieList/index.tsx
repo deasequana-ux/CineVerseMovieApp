@@ -1,7 +1,8 @@
 // src/components/MovieList.tsx
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setSearch, setType, setYear, setPage } from "../../store/slices/movieFilterSlice";
+import {  useDispatch } from "react-redux";
+import { AppDispatch, useSelector } from "../../store/store";
+import { setSearch, setType, setYear, setPage, fetchMovies } from "../../store/slices/movieFilterSlice";
 import {
   Container,
   Grid,
@@ -13,58 +14,17 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import YearPicker from "../../components/yearPicker";
 
-const API_URL = "https://www.omdbapi.com/";
-const API_KEY = "468c3b7e";
-
-interface Movie {
-  imdbID: string;
-  Title: string;
-  Year: string;
-  Type: string;
-  Poster: string;
-}
-
 const MovieList: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const { Search, Type, Year, Page, Movies, TotalPage, MoviesError } = useSelector((state) => state.movie);
 
-  const { search, type, year, page } = useSelector((state: any) => state.movie);
-  const [movies, setMovies] = React.useState<Movie[]>([]);
-  const [totalPages, setTotalPages] = React.useState(1);
-  const [error, setError] = React.useState<string>("");
-
-  const fetchMovies = async () => {
-    try {
-      const response = await axios.get(API_URL, {
-        params: {
-          apikey: API_KEY,
-          s: search,
-          type,
-          y: year || "",
-          page,
-        },
-      });
-
-      if (response.data.Response === "False") {
-        setError(response.data.Error);
-        setMovies([]);
-        setTotalPages(1);
-      } else {
-        setMovies(response.data.Search);
-        setTotalPages(Math.ceil(response.data.totalResults / 10));
-        setError("");
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    }
-  };
 
   useEffect(() => {
-    fetchMovies();
-  }, [search, type, year, page]);
+    dispatch(fetchMovies({ Search, Type, Year, Page }));
+  }, [dispatch, Search, Type, Year, Page]);
 
   return (
     <Container>
@@ -79,21 +39,21 @@ const MovieList: React.FC = () => {
             <input
               type="text"
               placeholder="Search Movies"
-              value={search}
+              value={Search}
               onChange={(e) => dispatch(setSearch(e.target.value))}
               className="filter-input"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <YearPicker
-              value={year}
+              value={Year}
               onChange={(value) => dispatch(setYear(value))}
               className="filter-yearpicker"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <Select
-              value={type}
+              value={Type}
               onChange={(e) => dispatch(setType(e.target.value as string))}
               variant="outlined"
               fullWidth
@@ -108,15 +68,15 @@ const MovieList: React.FC = () => {
       </div>
 
       {/* Error Message */}
-      {error && (
+      {MoviesError && (
         <Typography variant="h6" color="error" style={{ marginBottom: "20px" }}>
-          {error}
+          {MoviesError}
         </Typography>
       )}
 
       {/* Movie Section */}
       <Grid container spacing={4} justifyContent="center">
-        {movies.map((movie) => (
+        {Movies.map((movie) => (
           <Grid item key={movie.imdbID} xs={12} sm={6} md={4} lg={3}>
             <Card className="movie-card">
               <Link to={`/movie/${movie.imdbID}`} style={{ textDecoration: "none" }}>
@@ -149,8 +109,8 @@ const MovieList: React.FC = () => {
       </Grid>
 
       <Pagination
-        count={totalPages}
-        page={page}
+        count={TotalPage}
+        page={Page}
         onChange={(e, value) => dispatch(setPage(value))}
         className="pagination-wrapper"
         style={{ marginTop: "30px", marginBottom: "30px" }}
